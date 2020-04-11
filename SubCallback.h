@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <functional>
 #include "Msg.h"
 
 class BaseSubCallback;
@@ -39,7 +40,6 @@ public:
 	}
 	virtual void call(BaseMsgPtr msg)
 	{
-		//std::dynamic_pointer_cast<derived>(b_ptr);
 		auto mptr = std::dynamic_pointer_cast<Msg<T>>(msg);
 		if (mptr) {
 			callback(mptr);

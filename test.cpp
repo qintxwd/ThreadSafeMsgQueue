@@ -1,6 +1,7 @@
 
 #include "ThreadSafeMsgQueue.h"
 #include <sstream>
+#include <functional>
 
 template<typename T>
 void onMsgSub(MsgPtr<T> msg) {
@@ -54,15 +55,15 @@ void testThreadSubscribe(ThreadSafeMsgQueuePtr tfmq,std::string topic)
 }
 
 
-void main()
+int main()
 {
 	ThreadSafeMsgQueuePtr tfmq = ThreadSafeMsgQueue::getInstance();
 	
 	std::vector<std::thread> threads;
 	//topic: topic_a
-	//类型:string
-	//订阅者：10个  
-	//发布者：10个
+	//msg type:string
+	//10 publisher  
+	//10 subscriber
 	for (int i = 0; i < 10; ++i)
 	{
 		threads.push_back(std::thread(std::bind(testThreadSubscribe<std::string>, tfmq,"topic_a")));
@@ -70,8 +71,8 @@ void main()
 	}
 
 	//topic: topic_b
-	//订阅者：3个   分别订阅int类型 double类型 string类型
-	//发布者：15个  分3组，每5个分别发布int类型 double类型 string类型
+	//3 subscibers,subscribe int/string/double
+	//5 publisher pub int; 5 publisher pub string; 5 publisher pub string
 	threads.push_back(std::thread(std::bind(testThreadSubscribe<std::string>, tfmq, "topic_b")));
 	threads.push_back(std::thread(std::bind(testThreadSubscribe<int>, tfmq, "topic_b")));
 	threads.push_back(std::thread(std::bind(testThreadSubscribe<double>, tfmq, "topic_b")));
@@ -93,5 +94,5 @@ void main()
 		threads[i].join();
 	
 
-
+	return 0;
 }
