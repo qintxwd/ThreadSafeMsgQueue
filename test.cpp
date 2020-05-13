@@ -4,7 +4,7 @@
 #include <functional>
 
 template <typename T>
-void onMsgSub(MsgPtr<T> msg)
+void onMsgSub(const MsgPtr<T> msg)
 {
 	std::cout << "thread id[" << std::this_thread::get_id() << "] subscribe callback "
 			  << " msg= [" << msg->getContent() << "]" << std::endl;

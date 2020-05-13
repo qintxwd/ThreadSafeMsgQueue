@@ -13,7 +13,7 @@ public:
 	BaseSubCallback() {}
 	~BaseSubCallback() {}
 
-	virtual void call(BaseMsgPtr msg)  = 0;
+	virtual void call(const BaseMsgPtr msg)  = 0;
 
 	BaseSubCallbackPtr shared_from_base() {
 		return shared_from_this();
@@ -29,7 +29,7 @@ template<typename T>
 class SubCallback : public BaseSubCallback
 {
 public:
-	typedef std::function<void(MsgPtr<T>)> Callback;
+	typedef std::function<void(const MsgPtr<T>)> Callback;
 
 	SubCallback(const Callback &callback_) :
 		callback(callback_)

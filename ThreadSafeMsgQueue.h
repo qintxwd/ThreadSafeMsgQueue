@@ -41,7 +41,7 @@ public:
 	}
 
 	template<typename MSG_TYPE>
-	void subscribe(std::string topic, std::function<void(MsgPtr<MSG_TYPE> msg)> callback)
+	void subscribe(std::string topic, std::function<void(const MsgPtr<MSG_TYPE> msg)> callback)
 	{
 		std::lock_guard<std::mutex> lg(mtx);
 		SubCallbackPtr<MSG_TYPE> callback_ptr(new SubCallback<MSG_TYPE>(callback));
