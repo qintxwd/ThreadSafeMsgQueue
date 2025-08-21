@@ -24,16 +24,16 @@ add_example_executable(simple_example simple_example.cpp)
 # Basic Usage Example
 add_example_executable(basic_usage basic_usage.cpp)
 
-# SLAM System Example - temporarily disabled due to encoding issues
-# add_example_executable(slam_example slam_example.cpp)
+# SLAM System Example
+add_example_executable(slam_example slam_example.cpp)
 
-# Performance Demo - temporarily disabled due to encoding issues
-# add_example_executable(performance_demo performance_demo.cpp)
+# Performance Demo
+add_example_executable(performance_demo performance_demo.cpp)
 
-# PubSub Example
-add_example_executable(pubsub_example pubsub_example.cpp)
+# Comprehensive PubSub Demo
+add_example_executable(comprehensive_pubsub_demo comprehensive_pubsub_demo.cpp)
 
 # Print examples configuration
 message(STATUS "Examples Configuration:")
 message(STATUS "  Example Include Dirs: ${EXAMPLE_INCLUDE_DIRS}")
-message(STATUS "  Available Examples: simple_example, basic_usage, pubsub_example")
+message(STATUS "  Available Examples: simple_example, basic_usage, slam_example, performance_demo, comprehensive_pubsub_demo")

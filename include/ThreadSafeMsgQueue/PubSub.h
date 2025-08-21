@@ -31,8 +31,8 @@ namespace ThreadSafeMsgQueue {
 class PubSubSystem {
 public:
     struct Config {
-        size_t default_queue_size = 1000;
-        size_t worker_thread_count = 1;
+        size_t default_queue_size = 10000;
+        size_t worker_thread_count = 4;
         std::chrono::milliseconds processing_timeout{100};
         bool enable_statistics = true;
     };
@@ -456,9 +456,9 @@ inline void PubSubSystem::workerLoop() {
 inline void PubSubSystem::processTopicQueue(const std::string& topic, MsgQueuePtr queue) {
     auto start_time = std::chrono::high_resolution_clock::now();
     
-    // Process up to 10 messages per call to avoid blocking too long
+    // Process up to 100 messages per call to improve throughput
     int processed_count = 0;
-    const int max_batch = 10;
+    const int max_batch = 100;
     
     while (processed_count < max_batch && !queue->empty()) {
         auto message = queue->dequeue();

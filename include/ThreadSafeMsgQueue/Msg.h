@@ -55,10 +55,10 @@ public:
   bool operator<(const BaseMsg &other) const noexcept
   {
     if (priority != other.priority)
-      return priority < other.priority;
+      return priority < other.priority;  // Higher priority messages should be processed first
     if (timestamp != other.timestamp)
-      return timestamp > other.timestamp;  // Older messages (smaller timestamp) have higher priority
-    return msg_id_ > other.msg_id_;  // Use message ID as final tie-breaker
+      return timestamp < other.timestamp;  // Older messages (smaller timestamp) have higher priority
+    return msg_id_ < other.msg_id_;  // Use message ID as final tie-breaker
   }
 
   // Renamed and made noexcept

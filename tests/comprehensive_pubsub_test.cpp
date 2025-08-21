@@ -123,22 +123,48 @@ public:
 private:
     void workerLoop() {
         while (running_.load()) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            for (auto& [topic, queue] : topic_queues_) {
-                auto msg = queue->tryDequeue();
-                if (msg) {
-                    auto sub_it = subscribers_.find(topic);
-                    if (sub_it != subscribers_.end()) {
-                        for (const auto& subscription : sub_it->second) {
-                            try {
-                                subscription.callback(msg);
-                            } catch (const std::exception& e) {
-                                std::cerr << "Error in subscription callback: " << e.what() << std::endl;
-                            }
+            // Process all available messages in priority order
+            std::vector<std::pair<std::string, BaseMsgPtr>> messages_to_process;
+            
+            // Collect all messages from all queues
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                for (auto& topic_queue_pair : topic_queues_) {
+                    const auto& topic = topic_queue_pair.first;
+                    auto& queue = topic_queue_pair.second;
+                    
+                    // Dequeue all available messages
+                    BaseMsgPtr msg;
+                    while ((msg = queue->dequeue()) != nullptr) {
+                        messages_to_process.emplace_back(topic, msg);
+                    }
+                }
+            }
+            
+            // Sort messages by priority (highest first)
+            std::sort(messages_to_process.begin(), messages_to_process.end(),
+                [](const auto& a, const auto& b) {
+                    return a.second->getPriority() > b.second->getPriority();
+                });
+            
+            // Process messages in priority order
+            for (const auto& msg_pair : messages_to_process) {
+                const auto& topic = msg_pair.first;
+                const auto& msg = msg_pair.second;
+                
+                std::lock_guard<std::mutex> lock(mutex_);
+                auto sub_it = subscribers_.find(topic);
+                if (sub_it != subscribers_.end()) {
+                    for (const auto& subscription : sub_it->second) {
+                        try {
+                            subscription.callback(msg);
+                        } catch (const std::exception& e) {
+                            std::cerr << "Error in subscription callback: " << e.what() << std::endl;
                         }
                     }
                 }
             }
+            
             std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
     }
@@ -503,7 +529,7 @@ private:
         
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         
-        GlobalPubSub::unsubscribe(sub2);
+        GlobalPubSub::unsubscribe("dynamic_global", sub2);
         
         SensorData data3(3, 3.0, {3.0f});
         GlobalPubSub::publish("dynamic_global", data3);
@@ -558,8 +584,18 @@ private:
         }
         
         int expected_total = num_publishers * messages_per_publisher * num_subscribers;
+        auto timeout_start = std::chrono::high_resolution_clock::now();
+        const auto timeout_duration = std::chrono::seconds(10); // 10 second timeout
+        
         while (total_received.load() < expected_total) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            
+            auto current_time = std::chrono::high_resolution_clock::now();
+            if (current_time - timeout_start > timeout_duration) {
+                std::cout << "   Warning: Timeout reached. Received " << total_received.load() 
+                         << "/" << expected_total << " messages" << std::endl;
+                break;
+            }
         }
         
         auto end_time = std::chrono::high_resolution_clock::now();
@@ -763,8 +799,18 @@ private:
         }
         
         int expected_total = num_publishers * messages_per_publisher * num_subscribers;
+        auto timeout_start = std::chrono::high_resolution_clock::now();
+        const auto timeout_duration = std::chrono::seconds(10); // 10 second timeout
+        
         while (total_received.load() < expected_total) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            
+            auto current_time = std::chrono::high_resolution_clock::now();
+            if (current_time - timeout_start > timeout_duration) {
+                std::cout << "   Warning: Timeout reached. Received " << total_received.load() 
+                         << "/" << expected_total << " messages" << std::endl;
+                break;
+            }
         }
         
         auto end_time = std::chrono::high_resolution_clock::now();

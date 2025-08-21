@@ -201,6 +201,52 @@ private:
 };
 ```
 
+## Priority System
+
+The ThreadSafeMsgQueue uses a **higher-number-means-higher-priority** system:
+
+### Priority Rules
+- **Higher numbers = Higher priority**: Priority 5 > Priority 3 > Priority 1
+- **Processing order**: Messages with higher priority values are processed first
+- **Recommended range**: 0-10 for most applications
+
+### Priority Examples
+```cpp
+// Emergency stop command (highest priority)
+auto emergency_msg = make_msg<EmergencyStop>(10, emergency_data);
+
+// Laser scan data (high priority for real-time processing)
+auto laser_msg = make_msg<LaserScan>(8, laser_data);
+
+// Odometry data (medium priority)
+auto odom_msg = make_msg<Odometry>(5, odom_data);
+
+// Camera data (normal priority)
+auto camera_msg = make_msg<CameraData>(3, camera_data);
+
+// Background logging (low priority)
+auto log_msg = make_msg<LogData>(1, log_data);
+```
+
+### Priority Processing Order
+When multiple messages are in the queue:
+1. **Priority 10** (Emergency) - processed first
+2. **Priority 8** (Laser scan) - processed second
+3. **Priority 5** (Odometry) - processed third
+4. **Priority 3** (Camera) - processed fourth
+5. **Priority 1** (Logging) - processed last
+
+### Tie-Breaking Rules
+When messages have the same priority:
+1. **Timestamp**: Older messages are processed first
+2. **Message ID**: Lower IDs are processed first (if timestamps are identical)
+
+### SLAM Application Priority Guidelines
+- **Emergency commands**: 8-10 (system safety)
+- **Sensor data**: 5-7 (real-time processing)
+- **Map updates**: 3-5 (important but not time-critical)
+- **Logging/debugging**: 1-2 (background tasks)
+
 ## Building
 
 This is a header-only library. Simply include the headers and link with pthread:
@@ -299,6 +345,8 @@ struct PubSubStatistics {
 
 1. **Topic Naming**: Use hierarchical naming like `"sensors/temperature"`, `"slam/laser_scan"`
 2. **Priority Usage**: Higher numbers = higher priority (0-10 recommended range)
+   - Priority 5 > Priority 3 > Priority 1 (messages with priority 5 are processed before priority 3)
+   - Example: Emergency messages (priority 8-10), Normal processing (priority 3-5), Background tasks (priority 1-2)
 3. **Batch Operations**: Use batch publishing for high-throughput scenarios
 4. **Resource Management**: Always call `stop()` or `unsubscribe()` for cleanup
 5. **Thread Safety**: All operations are thread-safe, no external synchronization needed

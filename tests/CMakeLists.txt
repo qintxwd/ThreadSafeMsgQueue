@@ -27,11 +27,8 @@ add_test_executable(odr_test odr_test.cpp)
 # Performance Benchmark Test
 add_test_executable(performance_test performance_test.cpp)
 
-# Simple PubSub Pattern Test
-add_test_executable(simple_pubsub_test simple_pubsub_test.cpp)
-
-# PubSub System Test
-add_test_executable(pubsub_test pubsub_test.cpp)
+# Comprehensive PubSub System Test
+add_test_executable(comprehensive_pubsub_test comprehensive_pubsub_test.cpp)
 
 # Message Queue Unit Tests
 add_test_executable(msgqueue_unit_test msgqueue_unit_test.cpp)
@@ -45,4 +42,4 @@ add_test_executable(integration_test integration_test.cpp)
 # Print test configuration
 message(STATUS "Tests Configuration:")
 message(STATUS "  Test Include Dirs: ${TEST_INCLUDE_DIRS}")
-message(STATUS "  Available Tests: odr_test, performance_test, simple_pubsub_test, pubsub_test, msgqueue_unit_test, callback_test, integration_test")
+message(STATUS "  Available Tests: odr_test, performance_test, comprehensive_pubsub_test, msgqueue_unit_test, callback_test, integration_test")
