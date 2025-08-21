@@ -5,6 +5,9 @@
 #include <type_traits>
 #include <vector>
 
+namespace qyh {
+namespace ThreadSafeMsgQueue {
+
 class BaseSubCallback;
 using BaseSubCallbackPtr = std::shared_ptr<BaseSubCallback>;
 
@@ -130,3 +133,6 @@ public:
 private:
   std::vector<SubCallbackPtr<T>> callbacks_;
 };
+
+} // namespace ThreadSafeMsgQueue
+} // namespace qyh

@@ -1,9 +1,11 @@
-#include "ThreadSafeMsgQueue.h"
+#include "ThreadSafeMsgQueue/ThreadSafeMsgQueue.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
 #include <vector>
 #include <random>
+
+using namespace qyh::ThreadSafeMsgQueue;
 
 struct PerformanceTestData {
     int id;

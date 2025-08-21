@@ -1,10 +1,8 @@
-#pragma once
-
 /**
- * @file ODRTest.h
+ * @file odr_test.cpp
  * @brief ODR (One Definition Rule) Compliance Test for ThreadSafeMsgQueue
  * 
- * This header demonstrates that our framework is ODR-compliant and can be
+ * This file demonstrates that our framework is ODR-compliant and can be
  * safely included in multiple translation units without symbol conflicts.
  * 
  * Test scenarios:
@@ -14,7 +12,7 @@
  * 4. Thread safety across translation units
  */
 
-#include "ThreadSafeMsgQueue.h"
+#include "ThreadSafeMsgQueue/ThreadSafeMsgQueue.h"
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -22,6 +20,8 @@
 #include <set>
 #include <atomic>
 #include <sstream>
+
+using namespace qyh::ThreadSafeMsgQueue;
 
 namespace ODRTest {
 
@@ -43,7 +43,7 @@ namespace ODRTest {
      * @brief Test function that creates messages and verifies unique IDs
      * This function can be called from multiple translation units
      */
-    inline std::vector<uint64_t> createMessagesAndGetIds(int count = 10) {
+    std::vector<uint64_t> createMessagesAndGetIds(int count = 10) {
         std::vector<uint64_t> ids;
         ids.reserve(count);
         
@@ -60,7 +60,7 @@ namespace ODRTest {
     /**
      * @brief Verify that message IDs are globally unique across translation units
      */
-    inline bool verifyGlobalIdUniqueness() {
+    bool verifyGlobalIdUniqueness() {
         constexpr int num_threads = 4;
         constexpr int msgs_per_thread = 100;
         
@@ -106,7 +106,7 @@ namespace ODRTest {
     /**
      * @brief Test queue operations across simulated translation units
      */
-    inline bool testQueueOperations() {
+    bool testQueueOperations() {
         auto queue = std::make_shared<MsgQueue>(1000);
         
         // Test from "different translation units" (different threads)
@@ -171,7 +171,7 @@ namespace ODRTest {
     /**
      * @brief Run complete ODR compliance test suite
      */
-    inline bool runCompleteTest() {
+    bool runCompleteTest() {
         std::cout << "=== ThreadSafeMsgQueue ODR Compliance Test ===" << std::endl;
         
         bool all_passed = true;
@@ -193,3 +193,7 @@ namespace ODRTest {
     }
 
 } // namespace ODRTest
+
+int main() {
+    return ODRTest::runCompleteTest() ? 0 : 1;
+}

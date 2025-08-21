@@ -50,6 +50,7 @@
 /**
  * @brief Framework version information
  */
+namespace qyh {
 namespace ThreadSafeMsgQueue {
     constexpr int VERSION_MAJOR = 2;
     constexpr int VERSION_MINOR = 0;
@@ -60,7 +61,8 @@ namespace ThreadSafeMsgQueue {
                std::to_string(VERSION_MINOR) + "." + 
                std::to_string(VERSION_PATCH);
     }
-}
+} // namespace ThreadSafeMsgQueue
+} // namespace qyh
 
 /**
  * @brief Summary of optimizations and ODR compliance fixes:

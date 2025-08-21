@@ -1,7 +1,9 @@
-#include "ThreadSafeMsgQueue.h"
+#include "ThreadSafeMsgQueue/ThreadSafeMsgQueue.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
+
+using namespace qyh::ThreadSafeMsgQueue;
 
 struct SensorData {
     int sensor_id;
@@ -68,6 +70,7 @@ int main() {
     std::cout << "Current size: " << stats.current_size.load() << std::endl;
     std::cout << "Peak size: " << stats.peak_size.load() << std::endl;
     
-    std::cout << "\n✅ Simple example completed successfully!" << std::endl;
+    std::cout << "\n�?Simple example completed successfully!" << std::endl;
     return 0;
 }
+

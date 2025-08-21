@@ -7,6 +7,9 @@
 #include <vector>
 #include <atomic>
 
+namespace qyh {
+namespace ThreadSafeMsgQueue {
+
 class MsgQueue;
 using MsgQueuePtr = std::shared_ptr<MsgQueue>;
 
@@ -232,3 +235,6 @@ private:
   size_t max_size_{std::numeric_limits<size_t>::max()};
   mutable Statistics stats_;
 };
+
+} // namespace ThreadSafeMsgQueue
+} // namespace qyh

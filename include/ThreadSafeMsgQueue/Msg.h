@@ -5,6 +5,9 @@
 #include <atomic>
 #include <type_traits>
 
+namespace qyh {
+namespace ThreadSafeMsgQueue {
+
 // Thread-safe global message ID generator with ODR-safe implementation
 namespace detail {
     // Use a function-local static with external linkage to ensure single instance
@@ -142,3 +145,6 @@ MsgPtr<T> make_msg(Args&&... args)
 {
   return std::make_shared<Msg<T>>(std::forward<Args>(args)...);
 }
+
+} // namespace ThreadSafeMsgQueue
+} // namespace qyh
